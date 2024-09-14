@@ -1,6 +1,6 @@
-package dev.capestone.jwtauth.repository;
+package dev.capestone.repository;
 
-import dev.capestone.jwtauth.model.User;
+import dev.capestone.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

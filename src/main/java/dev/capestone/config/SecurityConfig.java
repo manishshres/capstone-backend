@@ -1,4 +1,4 @@
-package dev.capestone.jwtauth.config;
+package dev.capestone.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

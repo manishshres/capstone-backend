@@ -1,7 +1,7 @@
-package dev.capestone.jwtauth.service;
+package dev.capestone.service;
 
-import dev.capestone.jwtauth.model.User;
-import dev.capestone.jwtauth.repository.UserRepository;
+import dev.capestone.model.User;
+import dev.capestone.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

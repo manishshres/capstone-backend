@@ -1,4 +1,4 @@
-package dev.capestone.jwtauth.payload;
+package dev.capestone.payload;
 
 public class JwtAuthenticationResponse {
     private String accessToken;

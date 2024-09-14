@@ -1,6 +1,6 @@
-package dev.capestone.jwtauth.security;
+package dev.capestone.security;
 
-import dev.capestone.jwtauth.model.User;
+import dev.capestone.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

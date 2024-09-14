@@ -1,7 +1,7 @@
-package dev.capestone.jwtauth.controller;
+package dev.capestone.controller;
 
-import dev.capestone.jwtauth.model.User;
-import dev.capestone.jwtauth.service.UserService;
+import dev.capestone.model.User;
+import dev.capestone.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

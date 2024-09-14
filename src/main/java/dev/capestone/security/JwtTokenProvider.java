@@ -1,4 +1,4 @@
-package dev.capestone.jwtauth.security;
+package dev.capestone.security;
 
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
