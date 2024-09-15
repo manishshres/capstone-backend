@@ -26,9 +26,9 @@ class SecurityConfigTest {
     void testSecurityFilterChain() throws Exception {
         // Test that /api/auth/** endpoints are accessible without authentication
         mockMvc.perform(get("/api/auth/test"))
-                .andExpect(status().isNotFound()); // Expect 404 as the endpoint doesn't exist, but it should be accessible
+                .andExpect(status().isOk());
 
-        // Test that other endpoints require authentication
+        // Test that other API endpoints require authentication
         mockMvc.perform(get("/api/other/test"))
                 .andExpect(status().isForbidden());
     }

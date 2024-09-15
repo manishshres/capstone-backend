@@ -14,6 +14,9 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,5 +102,15 @@ class AuthControllerTest {
         assertTrue(response.getBody() instanceof Map);
         Map<String, String> responseBody = (Map<String, String>) response.getBody();
         assertEquals("Invalid request body. Please check your input and try again.", responseBody.get("error"));
+    }
+
+    @RestController
+    @RequestMapping("/api/auth")
+    public class AuthTestController {
+
+        @GetMapping("/test")
+        public String testAuth() {
+            return "Auth test endpoint";
+        }
     }
 }
