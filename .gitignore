@@ -34,9 +34,9 @@ build/
 .vscode/
 src/.DS_Store
 src/main/.DS_Store
-src/main/frontend/node_modules
-src/main/frontend/node/*
-src/main/frontend/build/*
+frontend/node_modules
+frontend/node/*
+frontend/build/*
 
 # dependencies
 /node_modules
@@ -48,9 +48,11 @@ src/main/frontend/build/*
 
 # production
 /build
-
+app.log
+backend/app.log
 # misc
 .DS_Store
+.env*
 .env.local
 .env.development.local
 .env.test.local
