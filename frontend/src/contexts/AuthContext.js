@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode"; // Import the jwt-decode library
 
 export const AuthContext = createContext();
 
@@ -7,7 +8,7 @@ const AuthProvider = ({ children }) => {
   const [authState, setAuthState] = useState({
     token: localStorage.getItem("token"),
     isAuthenticated: false,
-    user: null,
+    user: {},
   });
 
   useEffect(() => {
@@ -40,10 +41,14 @@ const AuthProvider = ({ children }) => {
 
   const login = (token) => {
     localStorage.setItem("token", token);
+    const decodedToken = jwtDecode(token); // Decode the token
     setAuthState({
       ...authState,
       token,
       isAuthenticated: true,
+      user: {
+        email: decodedToken.email, // Extract the email from the decoded token
+      },
     });
   };
 

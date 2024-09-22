@@ -8,12 +8,14 @@ const Navbar = () => {
   return (
     <header className="bg-glaucous shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-        <div className="flex items-center">{/* Logo and Title */}</div>
+        <div className="flex items-center text-white text-3xl font-bold">
+          Capestone
+        </div>
         <nav>
           {authState.isAuthenticated ? (
             <>
               <span className="text-white mr-4">
-                Welcome, {authState.user.email}
+                Welcome, {authState.user.email || "User"}
               </span>
               <button
                 onClick={logout}
