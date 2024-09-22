@@ -22,14 +22,17 @@ const Login = () => {
         {
           email,
           password,
-        }
+        },
+        { headers: { "Content-Type": "application/json" } }
       );
+
+      console.log(response.data);
 
       // Use the login method from AuthContext
       login(response.data.token);
 
       setIsLoading(false);
-      navigate("/"); // Redirect to home or dashboard
+      navigate("/dashboard"); // Redirect to home or dashboard
     } catch (err) {
       setIsLoading(false);
       if (err.response) {
