@@ -1,7 +1,11 @@
-// Example of a protected service that retrieves user profile data
+// backend/services/protectedService.js
 exports.getUserProfile = async (userId) => {
   try {
     // Simulating a database call to fetch user profile based on userId
+    if (userId === "invalid-id") {
+      throw new Error("Error fetching user profile");
+    }
+
     const userProfile = {
       id: userId,
       name: "Test User",

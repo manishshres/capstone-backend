@@ -6,7 +6,6 @@ import Home from "./screens/Home";
 import Layout from "./components/Layout";
 import AuthProvider from "./contexts/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
-import Profile from "./screens/Profile";
 
 function App() {
   return (
@@ -15,14 +14,7 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route
-              path="/profile"
-              element={
-                <PrivateRoute>
-                  <Profile />
-                </PrivateRoute>
-              }
-            />
+            <Route path="/dashboard" element={<PrivateRoute></PrivateRoute>} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
           </Routes>
