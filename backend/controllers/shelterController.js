@@ -2,10 +2,13 @@ const shelterService = require("../services/shelterService");
 
 const getShelters = async (req, res) => {
   try {
-    const { zipcode } = req.query;
+    let { zipcode } = req.query;
     if (!zipcode) {
       return res.status(400).json({ error: "Zipcode is required" });
     }
+
+    // Ensure zipcode is a string and trimmed
+    zipcode = String(zipcode).trim();
 
     const shelters = await shelterService.getSheltersByZipcode(zipcode);
     res.json(shelters);

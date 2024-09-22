@@ -1,4 +1,3 @@
-// backend/tests/supabaseClient.test.js
 jest.mock("@supabase/supabase-js", () => ({
   createClient: jest.fn(() => ({})),
 }));

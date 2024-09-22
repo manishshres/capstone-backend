@@ -1,7 +1,4 @@
 const https = require("https");
-const dotenv = require("dotenv");
-
-dotenv.config();
 
 const getSheltersByZipcode = (zipcode) => {
   return new Promise((resolve, reject) => {
