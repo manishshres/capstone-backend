@@ -1,14 +1,17 @@
 const https = require("https");
 
-const getSheltersByZipcode = (zipcode) => {
+const makeApiRequest = (path) => {
   return new Promise((resolve, reject) => {
+    const keyName = `RAPIDAPI_KEY_${Math.floor(Math.random() * 3) + 1}`;
+    const apiKey = process.env[keyName];
+
     const options = {
       method: "GET",
       hostname: "homeless-shelter.p.rapidapi.com",
       port: null,
-      path: `/zipcode?zipcode=${zipcode}`,
+      path: path,
       headers: {
-        "x-rapidapi-key": process.env.RAPIDAPI_KEY,
+        "x-rapidapi-key": apiKey,
         "x-rapidapi-host": "homeless-shelter.p.rapidapi.com",
       },
     };
@@ -34,6 +37,24 @@ const getSheltersByZipcode = (zipcode) => {
   });
 };
 
+const getSheltersByZipcode = (zipcode) => {
+  return makeApiRequest(`/zipcode?zipcode=${zipcode}`);
+};
+
+const getSheltersByLocation = (lat, lng, radius = 1.4) => {
+  return makeApiRequest(`/location?lat=${lat}&lng=${lng}&radius=${radius}`);
+};
+
+const getSheltersByStateCity = (state, city) => {
+  return makeApiRequest(
+    `/state-city?state=${encodeURIComponent(state)}&city=${encodeURIComponent(
+      city
+    )}`
+  );
+};
+
 module.exports = {
   getSheltersByZipcode,
+  getSheltersByLocation,
+  getSheltersByStateCity,
 };
