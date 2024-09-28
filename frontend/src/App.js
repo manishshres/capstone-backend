@@ -7,6 +7,7 @@ import Layout from "./components/Layout";
 import AuthProvider from "./contexts/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import Dashboard from "./screens/Dashboard";
+import Profile from "./screens/Profile";
 
 function App() {
   return (
@@ -20,6 +21,15 @@ function App() {
               element={
                 <PrivateRoute>
                   <Dashboard />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile />
                 </PrivateRoute>
               }
             />
