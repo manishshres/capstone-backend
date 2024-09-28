@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 const authRoutes = require("./routes/authRoutes");
 const protectedRoutes = require("./routes/protectedRoutes");
 const shelterRoutes = require("./routes/shelterRoutes");
+const organizationRoutes = require("./routes/organizationRoutes");
 
 const errorHandler = require("./middlewares/errorHandler");
 
@@ -23,6 +24,7 @@ app.use(bodyParser.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/protected", protectedRoutes);
 app.use("/api", shelterRoutes);
+app.use("/api", organizationRoutes);
 
 // Global error handling middleware
 app.use(errorHandler);
