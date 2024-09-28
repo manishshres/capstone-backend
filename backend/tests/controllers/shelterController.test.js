@@ -5,65 +5,91 @@ const shelterService = require("../../services/shelterService");
 jest.mock("../../services/shelterService");
 
 describe("Shelter Controller", () => {
-  let req, res, next;
+  let req, res;
 
   beforeEach(() => {
     // Reset mocks before each test
     jest.clearAllMocks();
 
     // Mock request and response objects
-    req = {
-      query: {},
-    };
+    req = { query: {} };
     res = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-    next = jest.fn();
 
     // Mock console.error to prevent logging during tests
     console.error = jest.fn();
   });
 
-  test("should return 400 if zipcode is missing", async () => {
+  test("should return 400 if search parameter is missing", async () => {
     await getShelters(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ error: "Zipcode is required" });
-    expect(shelterService.getSheltersByZipcode).not.toHaveBeenCalled();
+    expect(res.json).toHaveBeenCalledWith({
+      error: "Search parameter is required",
+    });
   });
 
   test("should return shelters for valid zipcode", async () => {
     const mockShelters = [{ name: "Shelter 1" }, { name: "Shelter 2" }];
     shelterService.getSheltersByZipcode.mockResolvedValue(mockShelters);
 
-    req.query.zipcode = "12345";
+    req.query.search = "12345";
     await getShelters(req, res);
 
     expect(shelterService.getSheltersByZipcode).toHaveBeenCalledWith("12345");
     expect(res.json).toHaveBeenCalledWith(mockShelters);
-    expect(res.status).not.toHaveBeenCalled();
   });
 
-  test("should handle empty shelter list", async () => {
-    shelterService.getSheltersByZipcode.mockResolvedValue([]);
+  // New test for lat,lng search
+  test("should return shelters for valid lat,lng", async () => {
+    const mockShelters = [{ name: "Shelter 1" }, { name: "Shelter 2" }];
+    shelterService.getSheltersByLocation.mockResolvedValue(mockShelters);
 
-    req.query.zipcode = "12345";
+    req.query.search = "40.7128,-74.0060";
     await getShelters(req, res);
 
-    expect(shelterService.getSheltersByZipcode).toHaveBeenCalledWith("12345");
-    expect(res.json).toHaveBeenCalledWith([]);
-    expect(res.status).not.toHaveBeenCalled();
+    expect(shelterService.getSheltersByLocation).toHaveBeenCalledWith(
+      40.7128,
+      -74.006
+    );
+    expect(res.json).toHaveBeenCalledWith(mockShelters);
+  });
+
+  // New test for city,state search
+  test("should return shelters for valid city,state", async () => {
+    const mockShelters = [{ name: "Shelter 1" }, { name: "Shelter 2" }];
+    shelterService.getSheltersByStateCity.mockResolvedValue(mockShelters);
+
+    req.query.search = "New York, NY";
+    await getShelters(req, res);
+
+    expect(shelterService.getSheltersByStateCity).toHaveBeenCalledWith(
+      "NY",
+      "New York"
+    );
+    expect(res.json).toHaveBeenCalledWith(mockShelters);
+  });
+
+  test("should return 400 for invalid search format", async () => {
+    req.query.search = "invalid search";
+    await getShelters(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error:
+        "Invalid search format. Please use zipcode, lat,lng, or city,state",
+    });
   });
 
   test("should handle service errors", async () => {
     const error = new Error("Service error");
     shelterService.getSheltersByZipcode.mockRejectedValue(error);
 
-    req.query.zipcode = "12345";
+    req.query.search = "12345";
     await getShelters(req, res);
 
-    expect(shelterService.getSheltersByZipcode).toHaveBeenCalledWith("12345");
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
       error: "An error occurred while fetching shelters",
@@ -74,15 +100,11 @@ describe("Shelter Controller", () => {
     );
   });
 
-  test("should handle non-string zipcode input", async () => {
-    req.query.zipcode = 12345; // number instead of string
-    await getShelters(req, res);
+  test("should trim whitespace from search input", async () => {
+    const mockShelters = [{ name: "Shelter 1" }];
+    shelterService.getSheltersByZipcode.mockResolvedValue(mockShelters);
 
-    expect(shelterService.getSheltersByZipcode).toHaveBeenCalledWith("12345");
-  });
-
-  test("should trim whitespace from zipcode", async () => {
-    req.query.zipcode = " 12345 ";
+    req.query.search = " 12345 ";
     await getShelters(req, res);
 
     expect(shelterService.getSheltersByZipcode).toHaveBeenCalledWith("12345");

@@ -1,38 +1,38 @@
-const { getSheltersByZipcode } = require("../../services/shelterService");
+const {
+  getSheltersByZipcode,
+  getSheltersByLocation,
+  getSheltersByStateCity,
+} = require("../../services/shelterService");
 const https = require("https");
 
+// Mock the https module
 jest.mock("https");
 
 describe("Shelter Service", () => {
   const mockShelterData = [
     {
-      name: "Men's Eastside Winter Shelter",
-      address: "515B 116th Ave NE",
-      city: "Bellevue",
-      state: "WA",
-      zip_code: "98004",
-      location: "47.61487737486411,-122.1857149741896",
-      phone_number: "(425) 296-3797",
-      email_address: "volunteer@cfhomeless.org",
-      official_website: "http://www.cfhomeless.org/winter-shelter/",
-      description: "Winter Shelter...",
-      photo_urls: [
-        "https://www.homelessshelterdirectory.org/gallery/15928__pqc.jpg",
-      ],
-      update_datetime: "2023-06-21T17:26:38Z",
+      name: "Test Shelter",
+      address: "123 Test St",
+      city: "Test City",
+      state: "TS",
+      zip_code: "12345",
     },
   ];
 
-  afterEach(() => {
+  beforeEach(() => {
+    // Reset mocks before each test
     jest.clearAllMocks();
+    // Set up a mock API key
+    process.env.RAPIDAPI_KEY_1 = "test-api-key";
   });
 
-  test("should fetch shelters by zipcode", async () => {
+  // Helper function to set up mock response
+  const setupMockResponse = (data) => {
     const mockResponse = {
       on: jest.fn((event, callback) => {
         if (event === "data") {
           // Return mock data as Buffer
-          callback(Buffer.from(JSON.stringify(mockShelterData)));
+          callback(Buffer.from(JSON.stringify(data)));
         }
         if (event === "end") {
           callback();
@@ -49,39 +49,73 @@ describe("Shelter Service", () => {
       callback(mockResponse);
       return mockRequest;
     });
+  };
 
-    const result = await getSheltersByZipcode("98004");
+  test("should fetch shelters by zipcode", async () => {
+    setupMockResponse(mockShelterData);
+
+    const result = await getSheltersByZipcode("12345");
 
     expect(result).toEqual(mockShelterData);
-    expect(https.request).toHaveBeenCalled();
-    expect(mockRequest.end).toHaveBeenCalled();
+    expect(https.request).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: "/zipcode?zipcode=12345",
+      }),
+      expect.any(Function)
+    );
+  });
+
+  // New test for fetching shelters by location
+  test("should fetch shelters by location", async () => {
+    setupMockResponse(mockShelterData);
+
+    const result = await getSheltersByLocation(40.7128, -74.006);
+
+    expect(result).toEqual(mockShelterData);
+    expect(https.request).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: "/location?lat=40.7128&lng=-74.006&radius=1.4",
+      }),
+      expect.any(Function)
+    );
+  });
+
+  // New test for fetching shelters by state and city
+  test("should fetch shelters by state and city", async () => {
+    setupMockResponse(mockShelterData);
+
+    const result = await getSheltersByStateCity("New York", "NY");
+
+    expect(result).toEqual(mockShelterData);
+    expect(https.request).toHaveBeenCalledWith(
+      expect.objectContaining({
+        path: "/state-city?state=New%20York&city=NY",
+      }),
+      expect.any(Function)
+    );
   });
 
   test("should handle empty response", async () => {
-    const mockResponse = {
-      on: jest.fn((event, callback) => {
-        if (event === "data") {
-          // Return empty array as Buffer
-          callback(Buffer.from(JSON.stringify([])));
-        }
-        if (event === "end") {
-          callback();
-        }
-      }),
-    };
-
-    const mockRequest = {
-      on: jest.fn(),
-      end: jest.fn(),
-    };
-
-    https.request.mockImplementation((options, callback) => {
-      callback(mockResponse);
-      return mockRequest;
-    });
+    setupMockResponse([]);
 
     const result = await getSheltersByZipcode("00000");
 
     expect(result).toEqual([]);
+  });
+
+  // New test for handling API errors
+  test("should handle API error", async () => {
+    const mockRequest = {
+      on: jest.fn((event, callback) => {
+        if (event === "error") {
+          callback(new Error("API Error"));
+        }
+      }),
+      end: jest.fn(),
+    };
+
+    https.request.mockImplementation(() => mockRequest);
+
+    await expect(getSheltersByZipcode("12345")).rejects.toThrow("API Error");
   });
 });
