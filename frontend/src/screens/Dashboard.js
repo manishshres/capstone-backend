@@ -24,7 +24,7 @@ const Dashboard = () => {
       );
       setShelters(response.data);
     } catch (error) {
-      console.error("Error fetching shelters:", error);
+      // console.error("Error fetching shelters:", error);
       setError("An error occurred while fetching shelters. Please try again.");
     } finally {
       setIsLoading(false);
