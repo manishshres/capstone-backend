@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import ShelterList from "../components/ShelterList";
+import ShelterDetails from "../components/ShelterDetails";
 
 const Dashboard = () => {
   const [shelters, setShelters] = useState([]);
@@ -8,6 +9,7 @@ const Dashboard = () => {
   const [serviceType, setServiceType] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedShelter, setSelectedShelter] = useState(null);
 
   const fetchShelters = async () => {
     setIsLoading(true);
@@ -24,7 +26,6 @@ const Dashboard = () => {
       );
       setShelters(response.data);
     } catch (error) {
-      // console.error("Error fetching shelters:", error);
       setError("An error occurred while fetching shelters. Please try again.");
     } finally {
       setIsLoading(false);
@@ -35,6 +36,14 @@ const Dashboard = () => {
     e.preventDefault();
     fetchShelters();
   };
+
+  const handleShelterSelect = (shelter) => {
+    setSelectedShelter(shelter);
+  };
+
+  if (selectedShelter) {
+    return <ShelterDetails shelter={selectedShelter} />;
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -71,7 +80,10 @@ const Dashboard = () => {
       {isLoading ? (
         <div className="text-center">Loading...</div>
       ) : (
-        <ShelterList shelters={shelters} />
+        <ShelterList
+          shelters={shelters}
+          onShelterSelect={handleShelterSelect}
+        />
       )}
 
       {shelters.length > 0 && (
